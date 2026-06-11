@@ -1,0 +1,2 @@
+flask --app server --debug run
+flask --app server --debug run --port 8000
