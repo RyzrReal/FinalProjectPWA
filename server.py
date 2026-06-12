@@ -74,7 +74,6 @@ def register():
         session['username'] = username
         return redirect(url_for('login'))
 
-#dashboard
 
 #logout
 @app.route("/logout")
@@ -86,3 +85,7 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run()
+
+@app.route("/roster")
+def roster():
+    return render_template("roster.html")
