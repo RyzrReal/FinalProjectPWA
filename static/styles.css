@@ -16,3 +16,18 @@ header{
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     padding: 20px, 0;
 }
+
+
+    .teachertab {
+    margin: auto;
+    border-collapse: collapse;
+    }
+
+    .teachertab td,
+    .teachertab th {
+        padding: 10px;
+    }
+
+    .teachertab tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.15);
+    }

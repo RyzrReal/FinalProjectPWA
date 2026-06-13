@@ -1,9 +1,19 @@
-<!DOCTYPE html>
 
-<head>
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}" >
-    <h1>Parking Roster</h1>
-    <p>See where you are.</p>
+<form method="GET" action="/roster">
+    <select name="day" onchange="this.form.submit()">
+        <option value="MonA" {% if current_day == "MonA" %}selected{% endif %}>Monday A</option>
+        <option value="TuesA" {% if current_day == "TuesA" %}selected{% endif %}>Tuesday A</option>
+        <option value="WedA" {% if current_day == "WedA" %}selected{% endif %}>Wednesday A</option>
+        <option value="ThurA" {% if current_day == "ThurA" %}selected{% endif %}>Thursday A</option>
+        <option value="FriA" {% if current_day == "FriA" %}selected{% endif %}>Friday A</option>
+        <option value="MonB" {% if current_day == "MonB" %}selected{% endif %}>Monday B</option>
+        <option value="TuesB" {% if current_day == "TuesB" %}selected{% endif %}>Tuesday B</option>
+        <option value="WedB" {% if current_day == "WedB" %}selected{% endif %}>Wednesday B</option>
+        <option value="ThurB" {% if current_day == "ThurB" %}selected{% endif %}>Thursday B</option>
+        <option value="FriB" {% if current_day == "FriB" %}selected{% endif %}>Friday B</option>
+    </select>
+</form>
 
-</head>
+{% for teacher in all_data %}
+    <p>{{ teacher["name"] }} - {{ teacher["faculty"] }}</p>
+{% endfor %}

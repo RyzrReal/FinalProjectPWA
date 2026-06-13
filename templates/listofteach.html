@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}" >
+        <h1>Parking Roster</h1>
+        <p>List of Teachers.</p>
+
+    </head>
+
+    <form method="GET" action="/listofteach">
+        <label for="sort">Sort by:</label>
+
+        <select name="sort" id="sort" onchange="this.form.submit()">
+            <option value="name" {% if current_sort == "name" %}selected{% endif %}>
+                Name A-Z
+            </option>
+
+            <option value="name_desc" {% if current_sort == "name_desc" %}selected{% endif %}>
+                Name Z-A
+            </option>
+
+            <option value="course" {% if current_sort == "course" %}selected{% endif %}>
+                Course Taught
+            </option>
+
+            <option value="faculty" {% if current_sort == "faculty" %}selected{% endif %}>
+                Faculty
+            </option>
+        </select>
+
+
+    </form>
+
+    <body>
+        <table class="teachertab">
+            <tr>
+                <th>Name</th>
+                <th>Faculty</th>
+                <th>Course</th>
+            </tr>
+
+            {% for teacher in all_data %}
+            <tr>
+                <td>{{ teacher["name"] }}</td>
+                <td>{{ teacher["faculty"] }}</td>
+                <td>{{ teacher["course_taught"] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+
+</html>
+
