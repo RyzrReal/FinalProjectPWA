@@ -2,10 +2,17 @@
 
 <html>
     <head>
+
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li> <!--Takes user to the home page-->
+                <a href="{{url_for('roster')}}" class="btn btn-roster">View Roster</a>
+        </nav>
         <meta content="width=device-width, initial-scale=1" name="viewport">
         <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}" >
         <h1>Parking Roster</h1>
         <p>List of Teachers.</p>
+
 
     </head>
 
@@ -49,6 +56,8 @@
             </tr>
             {% endfor %}
         </table>
+
+
     </body>
 
 </html>

@@ -4,6 +4,7 @@ from flask import request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import sqlite3
+from cryptography.fernet import Fernet
 
 app = Flask(__name__)
 
@@ -22,7 +23,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(150), nullable=False)
 
     def set_password(self, password):     
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password) #this stores the password as a scramble of letters instead of the actual password
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -49,7 +50,7 @@ def login():
     #collects info from form and runs against db
     username = request.form["username"]
     password = request.form["password"]
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(username=username).first() #stops sqlinjection already with SQLAlcehmy
     if user and user.check_password(password):
         session['username'] = username
         return redirect(url_for('home'))
@@ -114,22 +115,6 @@ def get_db():
     conn.close()
     return all_data
 
-def selectionrand():
-    conn = sqlite3.connect("database/teachers.db") 
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-
-    #selects from teacher db
-    #only chooses teachers who have priority of 1
-    #gets the teachers in a random order
-    #limits to 30 selections
-
-    query = """
-    select * from teachers  
-    where priority = 1
-    order by random()
-    limit 30
-    """  
 
 def biweeklyrostamakea():
     conn = sqlite3.connect("database/teachers.db") 
@@ -165,13 +150,15 @@ def biweeklyrostamakea():
 
         for teacher in chosenteach:
             cursor.execute("""
-                insert into roster (day, Teachid, name, faculty)
-                values (?, ?, ?, ?)
+                insert into roster (day, Teachid, name, faculty, carcolour, course_taught)
+                values (?, ?, ?, ?, ?, ?)
             """, (
                 day,
                 teacher["Teachid"],
                 teacher["name"],
-                teacher["faculty"]
+                teacher["faculty"],
+                teacher["carcolour"],
+                teacher["course_taught"]
             ))
 
             #sets teacher priority to 0 so thay arent chbosen again
@@ -200,7 +187,9 @@ def create_roster_tablse():
             day TEXT,
             Teachid INTEGER,
             name TEXT,
-            faculty TEXT
+            faculty TEXT,
+            carcolour TEXT,
+            course_taught TEXT
         )
     """)
 

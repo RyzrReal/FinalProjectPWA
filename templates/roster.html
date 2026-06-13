@@ -1,19 +1,114 @@
+<head>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}" >
 
-<form method="GET" action="/roster">
-    <select name="day" onchange="this.form.submit()">
-        <option value="MonA" {% if current_day == "MonA" %}selected{% endif %}>Monday A</option>
-        <option value="TuesA" {% if current_day == "TuesA" %}selected{% endif %}>Tuesday A</option>
-        <option value="WedA" {% if current_day == "WedA" %}selected{% endif %}>Wednesday A</option>
-        <option value="ThurA" {% if current_day == "ThurA" %}selected{% endif %}>Thursday A</option>
-        <option value="FriA" {% if current_day == "FriA" %}selected{% endif %}>Friday A</option>
-        <option value="MonB" {% if current_day == "MonB" %}selected{% endif %}>Monday B</option>
-        <option value="TuesB" {% if current_day == "TuesB" %}selected{% endif %}>Tuesday B</option>
-        <option value="WedB" {% if current_day == "WedB" %}selected{% endif %}>Wednesday B</option>
-        <option value="ThurB" {% if current_day == "ThurB" %}selected{% endif %}>Thursday B</option>
-        <option value="FriB" {% if current_day == "FriB" %}selected{% endif %}>Friday B</option>
-    </select>
-</form>
+</head>
 
-{% for teacher in all_data %}
-    <p>{{ teacher["name"] }} - {{ teacher["faculty"] }}</p>
-{% endfor %}
+<body>
+
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('listofteach') }}">List of Teachers</a></li>
+        </ul>
+    </nav>
+
+    <h1>Parking Roster</h1>
+    <p>See where you are parked</p>
+
+    <form method="GET" action="/roster">
+        <select name="day" onchange="this.form.submit()">
+            <option value="MonA" {% if current_day == "MonA" %}selected{% endif %}>Monday A</option>
+            <option value="TuesA" {% if current_day == "TuesA" %}selected{% endif %}>Tuesday A</option>
+            <option value="WedA" {% if current_day == "WedA" %}selected{% endif %}>Wednesday A</option>
+            <option value="ThurA" {% if current_day == "ThurA" %}selected{% endif %}>Thursday A</option>
+            <option value="FriA" {% if current_day == "FriA" %}selected{% endif %}>Friday A</option>
+            <option value="MonB" {% if current_day == "MonB" %}selected{% endif %}>Monday B</option>
+            <option value="TuesB" {% if current_day == "TuesB" %}selected{% endif %}>Tuesday B</option>
+            <option value="WedB" {% if current_day == "WedB" %}selected{% endif %}>Wednesday B</option>
+            <option value="ThurB" {% if current_day == "ThurB" %}selected{% endif %}>Thursday B</option>
+            <option value="FriB" {% if current_day == "FriB" %}selected{% endif %}>Friday B</option>
+        </select>
+    </form>
+
+<div class="carpark">
+    {% for teacher in all_data %}
+        <div class="car">
+            <img src="{{ teacher['carcolour'] }}">
+            <span class="tooltip">
+                {{ teacher["name"] }}<br>
+                {{ teacher["faculty"] }}<br>
+                {{ teacher["course_taught"]}}
+            </span>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="teachlist">
+        <table class="teachertab">
+            <tr>
+                <th>Name</th>
+                <th>Faculty</th>
+                <th>Course</th>
+            </tr>
+
+            {% for teacher in all_data %}
+            <tr>
+                <td>{{ teacher["name"] }}</td>
+                <td>{{ teacher["faculty"] }}</td>
+                <td>{{ teacher["course_taught"] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+</div>
+
+</body>
+
+<style>
+    .teachlist {
+        align-items: right;
+    }
+
+    .carpark {
+    background-image: url("/static/carpark.jpg");
+    background-size: cover;
+    background-position: center;
+
+    width: 800px;
+    height: 500px;
+
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0px;
+}
+
+.car img {
+    width: 50px;
+    height: auto;
+}
+
+.car {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position:relative;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    width: 180px;
+    text-align: left;
+    z-index: 100;
+}
+
+.car:hover .tooltip {
+    display: block;
+}
+</style>
