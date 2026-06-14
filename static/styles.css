@@ -10,6 +10,30 @@ body {
     text-align: center;
 }
 
+
+.log-contain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: aliceblue;
+    background-size: auto;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+input,
+button{
+    border-radius: 5px;
+}
+
+  #auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
 header{
     width: 100%;
     background-color: rgb(78, 0, 0);

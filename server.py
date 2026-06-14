@@ -45,39 +45,45 @@ def home():
 
 
 #login
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST']) #creates a login route that only accepts the inputs comming from the form
 def login():
-    #collects info from form and runs against db
-    username = request.form["username"]
-    password = request.form["password"]
-    user = User.query.filter_by(username=username).first() #stops sqlinjection already with SQLAlcehmy
-    if user and user.check_password(password):
-        session['username'] = username
-        return redirect(url_for('home'))
+    username = request.form["username"] #saves the username variable as the username input in the form
+    password = request.form["password"] #saves the password variable as the password input in the form
+    if not username or password:
+        return render_template("login.html", error="No username or password entered")
+    
+    user = User.query.filter_by(username=username).first() #checks if the username inputted is in the login.db                      ##(this prevents SQLinjection, where the username is sent as data and not just a standard 1=1 method of veryfing a password)
+    if user and user.check_password(password): #checks if the username and the password_hash for said username matches in the data
+        session['username'] = username #keeps user logged in by storing the username in session
+        return redirect(url_for('home')) #sends user to home page (sucsessful login)
     else:
-        return render_template ('login.html')
+        return render_template ('login.html') #sends user to back to login page (unsucsessful login)
 
 #register
 @app.route("/register", methods=["POST"])
 def register():
-    username = request.form["username"]
+    username = request.form["username"] 
     password = request.form["password"]
-    user = User.query.filter_by(username=username).first()
+
+    if not username or password:
+        return render_template("login.html", error="No username or password entered")
+
+    user = User.query.filter_by(username=username).first() #checks if the username is already in the database
     if user:
-        return render_template("login.html", error="User Already Has An Account")
+        return render_template("login.html", error="User Already Has An Account") #reroutes user to login page
     else:
-        new_user = User(username=username)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        session['username'] = username
+        new_user = User(username=username) #sets the wanted username as username being stored
+        new_user.set_password(password) #hashes the password for the database
+        db.session.add(new_user) #adds user to db
+        db.session.commit() #permanantly saves new user to db
+        session['username'] = username #logs user in instantly after they register
         return redirect(url_for('login'))
 
 
 #logout
 @app.route("/logout")
 def logout():
-    session.pop('username',None)
+    session.pop('username',None) #deletes their session, logging them out
     return redirect(url_for('login'))
 
 
@@ -85,12 +91,14 @@ def logout():
 
 @app.route("/listofteach")
 def listofteach():
-    sort = request.args.get("sort", "name")
+    sort = request.args.get("sort", "name") #if the url shows that the user wants to sort by something like faculty, it uses the sort argument, otherwise it sorts by name
 
+    #connects to the database
     conn = sqlite3.connect("database/teachers.db") 
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
+    #give option to sort by name, faculty or course
     if sort == "name_desc":
         query = "select * from teachers order by name desc" 
     elif sort == "faculty":
@@ -100,6 +108,7 @@ def listofteach():
     else:
         query = "select * from teachers order by name asc" 
     
+    #gets the sorted data and sends to the page
     cursor.execute(query)
     data = cursor.fetchall()
     conn.close()
@@ -118,10 +127,10 @@ def get_db():
 
 def biweeklyrostamakea():
     conn = sqlite3.connect("database/teachers.db") 
-    conn.row_factory = sqlite3.Row
+    conn.row_factory = sqlite3.Row #allows the rows in a db to be accessed
     cursor = conn.cursor()
 
-    #array of all days
+    #list of all days in the biweekyly cycle
     days = ["MonA", "TuesA", "WedA", "ThurA", "FriA", "MonB", 
             "TuesB", "WedB", "ThurB", "FriB"]
 
@@ -129,15 +138,16 @@ def biweeklyrostamakea():
 
     for day in days:
         cursor.execute("select count(*) from teachers where priority = 1") #if all teachers have priority 0, it resets them all to 1
-        available = cursor.fetchone()[0]
+        available = cursor.fetchone()[0] #stores number of avaliable teachers
 
         if available < 30:
             cursor.execute("update teachers set priority = 1") #if no teachers have 1 prio but the roster doesnt have enough to be filled, it resets them all
+        
+        
         #selects from teacher db
         #only chooses teachers who have priority of 1
         #gets the teachers in a random order
         #limits to 30 selections
-
         cursor.execute("""
             select * from teachers  
             where priority = 1

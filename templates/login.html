@@ -1,22 +1,23 @@
-<div class="container">
-  <h1>Login</h1>
+<h1>Login</h1>
+
+<div class="log-contain">
   <form id="auth-form" action="{{url_for('login')}}" method="post">
   <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}" >  
     <input
-      type="text"
+      type="text" 
       name="username"
-      placeholder="Username"
+      placeholder="Username" required
       class="input field"
     />
     <!-- Creates the username field -->
     <input
       type="password"
       name="password"
-      placeholder="Password"
+      placeholder="Password" required
       class="input field"
     />
     <!-- Creates the password field -->
-    <input type="submit"
+    <input type="button"
     value="Login" 
     class="btn btn-login" 
     onclick="setActionForm('login')" />
@@ -42,7 +43,7 @@
     else if (action === 'register') {
       form.action = "{{url_for('register')}}"
       form.method = "post";
-      form.submit();
+      form.requestSubmit();
     }
   }
 
