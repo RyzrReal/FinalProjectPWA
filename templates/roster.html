@@ -5,7 +5,11 @@
 </head>
 
 <body>
-
+    {% if not session.get("roster_made") %}
+        <a href="{{ url_for('make_roster') }}" class="btn btn-roster">
+            Make Roster
+        </a>
+    {% endif %}
 
     <nav>
         <ul>
@@ -35,7 +39,7 @@
 <div class="carpark">
     {% for teacher in all_data %}
         <div class="car">
-            <img src="{{ teacher['carcolour'] }}">
+            <img src="{{url_for('static', filename='carcolour/' + teacher['carcolour']) }}">
             <span class="tooltip">
                 {{ teacher["name"] }}<br>
                 {{ teacher["faculty"] }}<br>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<head>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}" >
+
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('listofteach') }}">List of Teachers</a></li>
+        </ul>
+    </nav>
+
+    <h1>Parking Roster System.</h1>
+    <p>By Ryan Nesbit</p>
+
+
+</body>
+
+    <form class = "uploaddisp" action="{{ url_for('uploadteach') }}" method="post" enctype="multipart/form-data">
+
+        <label>English.txt Upload</label>
+        <input type="file" name="english">
+
+        <label>Mathematics.txt Upload</label>
+        <input type="file" name="maths">
+
+        <label>Science.txt Upload</label>
+        <input type="file" name="science">
+
+        <label>TAS.txt Upload</label>
+        <input type="file" name="tas">
+
+        <label>CAPA.txt Upload</label>
+        <input type="file" name="capa">
+
+        <label>PDHPE.txt Upload</label>
+        <input type="file" name="pdhpe">
+
+        <label>History and language.txt Upload</label>
+        <input type="file" name="historylanguage">
+
+        <label>HSIE.txt Upload</label>
+        <input type="file" name="hsie">
+
+        <label>Learning Support.txt Upload</label>
+        <input type="file" name="learningsupp">
+
+        <label>Student Administration And Support.txt Upload</label>
+        <input type="file" name="adminsupp">
+
+        <input type="submit" value="Import Data">
+
+    </form>

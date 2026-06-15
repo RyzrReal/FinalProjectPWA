@@ -1,10 +1,17 @@
 import os
-from flask import Flask, send_from_directory, render_template, redirect, url_for, session, g
+from flask import Flask, send_from_directory, render_template, redirect, url_for, flash, session, g
 from flask import request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 from cryptography.fernet import Fernet
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed 
+from wtforms import SelectField
+from werkzeug.utils import secure_filename 
+
+UPLOAD_FOLDER = '/static/txtfileup'
+ALLOWED_EXTENSIONS = {'txt'}
 
 app = Flask(__name__)
 
@@ -41,7 +48,70 @@ def home():
     return render_template('login.html')
 
 
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+@app.route('/uploadteach', methods=['GET','POST'])
+def uploadteach():
+    #connects to the database
+    if request.method == "POST":
+        conn = sqlite3.connect("database/importdteach.db")
+        cursor = conn.cursor()
+
+        teacher_files = {
+            "english":"English",
+            "maths": "Mathematics",
+            "science":"Science",
+            "tas":"TAS",
+            "capa":"CAPA",
+            "pdhpe":"PDHPE",
+            "historylanguage": "History and Languages",
+            "hsie":"HSIE",
+            "learningsupp":"Learning Support",
+            "adminsupp":"Student Administration and Support"
+        }
+
+        teacher_car = {
+            "English" : "englishcar.png",
+            "Mathematics" : "mathscar.png",
+            "Science" : "sciencecar.png",
+            "TAS" : "tascar.png",
+            "CAPA" : "capacar.png",
+            "PDHPE" : "pdhpecar.png",
+            "History and Languages" : "halcar.png",
+            "HSIE" : "hsiecar.png",
+            "Learning Support" : "lscar.png",
+            "Student Administration and Support" : "saascar.png"
+        }
+
+        for field_name, faculty in teacher_files.items():
+            file = request.files.get(field_name)
+
+            if file and file.filename != "":
+                for line in file:
+                    line = line.decode("utf-8").strip()
+
+                    if line == "":
+                        continue
+
+                    parts = line.split(",")
+
+                    name = parts[0].strip()
+                    course_taught = parts[1].strip() if len(parts) > 1 else ""
+                    carcolour = teacher_car[faculty]
+
+
+                    cursor.execute("""
+                        insert into importdteach (name, faculty, course_taught, carcolour, priority)
+                        values (?,?,?,?,?) """, (name, faculty, course_taught, carcolour, 1))
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("uploadteach"))
+    return render_template("uploadteach.html")        
 
 
 #login
@@ -49,7 +119,7 @@ def home():
 def login():
     username = request.form["username"] #saves the username variable as the username input in the form
     password = request.form["password"] #saves the password variable as the password input in the form
-    if not username or password:
+    if not username or not password:
         return render_template("login.html", error="No username or password entered")
     
     user = User.query.filter_by(username=username).first() #checks if the username inputted is in the login.db                      ##(this prevents SQLinjection, where the username is sent as data and not just a standard 1=1 method of veryfing a password)
@@ -65,7 +135,7 @@ def register():
     username = request.form["username"] 
     password = request.form["password"]
 
-    if not username or password:
+    if not username or not password:
         return render_template("login.html", error="No username or password entered")
 
     user = User.query.filter_by(username=username).first() #checks if the username is already in the database
@@ -94,19 +164,19 @@ def listofteach():
     sort = request.args.get("sort", "name") #if the url shows that the user wants to sort by something like faculty, it uses the sort argument, otherwise it sorts by name
 
     #connects to the database
-    conn = sqlite3.connect("database/teachers.db") 
+    conn = sqlite3.connect("database/importdteach.db") 
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
     #give option to sort by name, faculty or course
     if sort == "name_desc":
-        query = "select * from teachers order by name desc" 
+        query = "select * from importdteach order by name desc" 
     elif sort == "faculty":
-        query = "select * from teachers order by faculty asc, name asc"
+        query = "select * from importdteach order by faculty asc, name asc"
     elif sort == "course":
-        query = "select * from teachers order by course_taught asc, name asc"
+        query = "select * from importdteach order by course_taught asc, name asc"
     else:
-        query = "select * from teachers order by name asc" 
+        query = "select * from importdteach order by name asc" 
     
     #gets the sorted data and sends to the page
     cursor.execute(query)
@@ -116,17 +186,17 @@ def listofteach():
     return render_template("listofteach.html", all_data=data, current_sort = sort)
 
 def get_db():
-    conn = sqlite3.connect("database/teachers.db")
+    conn = sqlite3.connect("database/importdteach.db")
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM teachers")
+    cursor.execute("SELECT * FROM importdteach")
     all_data = cursor.fetchall()
     conn.close()
     return all_data
 
 
 def biweeklyrostamakea():
-    conn = sqlite3.connect("database/teachers.db") 
+    conn = sqlite3.connect("database/importdteach.db") 
     conn.row_factory = sqlite3.Row #allows the rows in a db to be accessed
     cursor = conn.cursor()
 
@@ -137,11 +207,11 @@ def biweeklyrostamakea():
     cursor.execute("delete from roster") #deletes old roster that was showing to avoid overlap
 
     for day in days:
-        cursor.execute("select count(*) from teachers where priority = 1") #if all teachers have priority 0, it resets them all to 1
+        cursor.execute("select count(*) from importdteach where priority = 1") #if all teachers have priority 0, it resets them all to 1
         available = cursor.fetchone()[0] #stores number of avaliable teachers
 
         if available < 30:
-            cursor.execute("update teachers set priority = 1") #if no teachers have 1 prio but the roster doesnt have enough to be filled, it resets them all
+            cursor.execute("update importdteach set priority = 1") #if no teachers have 1 prio but the roster doesnt have enough to be filled, it resets them all
         
         
         #selects from teacher db
@@ -149,7 +219,7 @@ def biweeklyrostamakea():
         #gets the teachers in a random order
         #limits to 30 selections
         cursor.execute("""
-            select * from teachers  
+            select * from importdteach  
             where priority = 1
             order by random()
             limit 30
@@ -173,7 +243,7 @@ def biweeklyrostamakea():
 
             #sets teacher priority to 0 so thay arent chbosen again
             cursor.execute("""
-                update teachers
+                update importdteach
                 set priority = 0
                 where Teachid = ?
             """, (teacher["Teachid"],))
@@ -183,12 +253,17 @@ def biweeklyrostamakea():
 
 @app.route("/make_roster")
 def make_roster():
+    if session.get("roster_made"):
+        return redirect(url_for("roster"))
+    
     biweeklyrostamakea()
-    return redirect("/roster")
+    session["roster_made"] = True
+
+    return redirect(url_for("roster"))
 
 
 def create_roster_tablse():
-    conn = sqlite3.connect("database/teachers.db")
+    conn = sqlite3.connect("database/importdteach.db")
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -212,7 +287,7 @@ create_roster_tablse()
 def roster():
     day = request.args.get("day", "MonA")
 
-    conn = sqlite3.connect("database/teachers.db")
+    conn = sqlite3.connect("database/importdteach.db")
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -227,6 +302,8 @@ def roster():
     conn.close()
 
     return render_template("roster.html", all_data=data, current_day=day)
+
+
 
 
 

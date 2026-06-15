@@ -22,6 +22,29 @@ body {
     padding: 20px;
   }
 
+.btnlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: aliceblue;
+    background-size: auto;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+
+.uploaddisp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: aliceblue;
+    background-size: auto;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
 input,
 button{
     border-radius: 5px;
