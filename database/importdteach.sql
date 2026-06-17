@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS importdteach;
+
 CREATE TABLE importdteach (
     Teachid INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,

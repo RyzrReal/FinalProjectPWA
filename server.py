@@ -48,8 +48,8 @@ def home():
         return render_template('index.html')
     return render_template('login.html')
 
-#sets that files are allowed and how they are processesed
-def allowed_file(filename):
+
+def allowed_file(filename): #dhecks if the uploaded file has an allowed exstension (.txt)
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 

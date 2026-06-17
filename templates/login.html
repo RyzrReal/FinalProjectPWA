@@ -38,15 +38,15 @@
 
 <script> 
   function setActionForm(action){
-    let form = document.getElementById("auth-form")
+    let form = document.getElementById("auth-form") /* finds the auth-form and stores it */
     if (action === "login"){
-      form.action = "{{url_for('login')}}"
-      form.method = "post";
-      form.submit();
+      form.action = "{{url_for('login')}}" /* sends to the login func */
+      form.method = "post"; /* sends the form data to flask */
+      form.submit(); 
     } 
     else if (action === 'register') {
-      form.action = "{{url_for('register')}}"
-      form.method = "post";
+      form.action = "{{url_for('register')}}" /* sends to the register func */
+      form.method = "post"; /* sends the form data to flask */
       form.requestSubmit();
     }
   }
