@@ -21,6 +21,12 @@
     <h1>Parking Roster</h1>
     <p>See where you are parked</p>
 
+    <form method="POST" action="{{ url_for('spacenum')}}">
+        <label>Number Of Parking Spaces</label>
+        <input type="number" name="spacenum" value="{{ spaceamout }}" min="1" max="120" required> 
+        <button type="submit">Save</button>
+    </form>
+
     <form method="GET" action="/roster">
         <select name="day" onchange="this.form.submit()">
             <option value="MonA" {% if current_day == "MonA" %}selected{% endif %}>Monday A</option>
@@ -80,11 +86,10 @@
     background-position: center;
 
     width: 800px;
-    height: 500px;
+    min-height: 500px;
 
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(3, 1fr);
     gap: 0px;
 }
 

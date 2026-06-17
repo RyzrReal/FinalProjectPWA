@@ -3,6 +3,7 @@
 <div class="log-contain">
   <form id="auth-form" action="{{url_for('login')}}" method="post">
   <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}" >  
+    
     <input
       type="text" 
       name="username"
@@ -10,12 +11,15 @@
       class="input field"
     />
     <!-- Creates the username field -->
+    <label>Username cannot be over 25 char. Please avoid personal sensitive information for safety</label>
+    
     <input
       type="password"
       name="password"
       placeholder="Password" required
       class="input field"
     />
+    <label>Password cannot be over 150 char. Unique passwords are always more secure.</label>
     <!-- Creates the password field -->
     <input type="button"
     value="Login" 
@@ -49,3 +53,9 @@
 
 </script>
 
+<style>
+  label {
+    font-size: 10px;
+    color: red;
+  }
+</style>
