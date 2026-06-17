@@ -5,7 +5,7 @@
 
         <nav>
             <ul>
-                <li><a href="{{ url_for('home') }}">Home</a></li> <!--Takes user to the home page-->
+                <a href="{{ url_for('home') }}">Home</a> <!--Takes user to the home page-->
                 <a href="{{url_for('roster')}}" class="btn btn-roster">View Roster</a>
         </nav>
         <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -22,18 +22,18 @@
         <select name="sort" id="sort" onchange="this.form.submit()">
             <option value="name" {% if current_sort == "name" %}selected{% endif %}>
                 Name A-Z
-            </option>
+            </option> <!-- calls the sort function for ascending -->
 
             <option value="name_desc" {% if current_sort == "name_desc" %}selected{% endif %}>
                 Name Z-A
-            </option>
+            </option> <!-- calls the sort function for descending -->
 
             <option value="course" {% if current_sort == "course" %}selected{% endif %}>
                 Course Taught
-            </option>
+            </option> <!-- calls the sort function for Course Taught -->
 
             <option value="faculty" {% if current_sort == "faculty" %}selected{% endif %}>
-                Faculty
+                Faculty <!-- calls the sort function for faculty -->
             </option>
         </select>
 
@@ -42,14 +42,14 @@
 
     <body>
         <table class="teachertab">
-            <tr>
+            <tr> <!-- Creates a table with these columns-->
                 <th>Name</th>
                 <th>Faculty</th>
                 <th>Course</th>
             </tr>
 
             {% for teacher in all_data %}
-            <tr>
+            <tr> <!-- Fills table with all teachers from the importdteach database-->
                 <td>{{ teacher["name"] }}</td>
                 <td>{{ teacher["faculty"] }}</td>
                 <td>{{ teacher["course_taught"] }}</td>

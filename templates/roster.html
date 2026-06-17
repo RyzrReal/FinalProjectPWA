@@ -28,7 +28,7 @@
     </form>
 
     <form method="GET" action="/roster">
-        <select name="day" onchange="this.form.submit()">
+        <select name="day" onchange="this.form.submit()"> <!-- Creates a dropdown for selecting the day -->
             <option value="MonA" {% if current_day == "MonA" %}selected{% endif %}>Monday A</option>
             <option value="TuesA" {% if current_day == "TuesA" %}selected{% endif %}>Tuesday A</option>
             <option value="WedA" {% if current_day == "WedA" %}selected{% endif %}>Wednesday A</option>
@@ -40,13 +40,13 @@
             <option value="ThurB" {% if current_day == "ThurB" %}selected{% endif %}>Thursday B</option>
             <option value="FriB" {% if current_day == "FriB" %}selected{% endif %}>Friday B</option>
         </select>
-    </form>
+    </form> <!-- Gets the roster for the selected day by collecting the day from the list and displaying the saved teachers. -->
 
 <div class="carpark">
     {% for teacher in all_data %}
         <div class="car">
             <img src="{{url_for('static', filename='carcolour/' + teacher['carcolour']) }}">
-            <span class="tooltip">
+            <span class="tooltip"> <!-- displays teache rinformation when hovered over-->
                 {{ teacher["name"] }}<br>
                 {{ teacher["faculty"] }}<br>
                 {{ teacher["course_taught"]}}
@@ -55,7 +55,7 @@
     {% endfor %}
 </div>
 
-<div class="teachlist">
+<div class="teachlist"> <!-- displays list of teachers that are rostered for the day-->
         <table class="teachertab">
             <tr>
                 <th>Name</th>

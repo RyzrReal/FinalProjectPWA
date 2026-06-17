@@ -33,7 +33,7 @@ body {
     padding: 20px;
 }
 
-
+/* styles the upload form into a column */
 .uploaddisp {
     display: flex;
     flex-direction: column;
@@ -45,12 +45,14 @@ body {
     padding: 20px;
   }
 
+/* Styles for input fields and buttons */
 input,
 button{
     border-radius: 5px;
 }
 
-  #auth-form {
+/* Styles the authentication forms*/
+  #auth-form { 
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -64,8 +66,8 @@ header{
     padding: 20px, 0;
 }
 
-
-    .teachertab {
+/* Lines 70 - 82 style the layout of the table displaying the teachers*/
+    .teachertab { 
     margin: auto;
     border-collapse: collapse;
     }
@@ -79,7 +81,7 @@ header{
         background-color: rgba(255, 255, 255, 0.15);
     }
 
-
+/* Style the navigation bar */
 nav {
     display: flex;
     justify-content: center;
